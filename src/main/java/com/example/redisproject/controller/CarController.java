@@ -2,6 +2,8 @@ package com.example.redisproject.controller;
 
 import com.example.redisproject.model.Car;
 import com.example.redisproject.service.CarService;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,16 +18,19 @@ public class CarController {
     }
 
     @GetMapping("{id}")
+    @Cacheable(value = "car")
     public Car getCar(@PathVariable("id") Long id) {
         return carService.getCarById(id);
     }
 
     @GetMapping("")
+    @Cacheable(value = "car")
     public List<Car> getCars() {
         return carService.getAllCars();
     }
 
     @PostMapping("/create")
+    @CachePut(key = "#car.company", value = "car")
     public Car createCar(@RequestBody Car car) {
         return carService.createCar(car.getCompany(), car.getModel());
     }
